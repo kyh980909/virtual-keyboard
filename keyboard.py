@@ -6,9 +6,14 @@ import math
 import numpy as np
 
 camIndex=0
+window_size = 400
 cap=cv2.VideoCapture(camIndex)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1200)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1200)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, window_size)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, window_size)
+
+print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+
 mpHands=mp.solutions.hands
 Hands=mpHands.Hands()
 mpDraw=mp.solutions.drawing_utils
@@ -27,15 +32,15 @@ class Store():
 def draw(img):
     thickness = 2
 
-    cv2.rectangle(img, (100, 100), (300, 300), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (900, 100), (1100, 300), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (530, 530), (680, 680), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (100, 900), (300, 1100), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (900, 900), (1100, 1100), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (450, 350), (750, 500), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (450, 710), (750, 860), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (250, 450), (400, 750), (255, 0, 0), thickness=thickness)
-    cv2.rectangle(img, (810, 450), (960, 750), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(100*window_size/1200), round(100*window_size/1200)), (round(300*window_size/1200), round(300*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(900*window_size/1200), round(100*window_size/1200)), (round(1100*window_size/1200), round(300*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(530*window_size/1200), round(530*window_size/1200)), (round(680*window_size/1200), round(680*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(100*window_size/1200), round(900*window_size/1200)), (round(300*window_size/1200), round(1100*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(900*window_size/1200), round(900*window_size/1200)), (round(1100*window_size/1200), round(1100*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(450*window_size/1200), round(350*window_size/1200)), (round(750*window_size/1200), round(500*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(450*window_size/1200), round(710*window_size/1200)), (round(750*window_size/1200), round(860*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(250*window_size/1200), round(450*window_size/1200)), (round(400*window_size/1200), round(750*window_size/1200)), (255, 0, 0), thickness=thickness)
+    cv2.rectangle(img, (round(810*window_size/1200), round(450*window_size/1200)), (round(960*window_size/1200), round(750*window_size/1200)), (255, 0, 0), thickness=thickness)
     # for button in storedVar:
     #     x, y = button.pos
     #     w, h = button.size
