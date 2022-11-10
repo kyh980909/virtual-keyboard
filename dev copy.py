@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = np.full((800, 800, 3), 255, np.uint8)
+img = np.full((960, 1280, 3), 255, np.uint8)
 
 thickness = 1
 
