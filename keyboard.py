@@ -39,19 +39,6 @@ def draw(img, storedVar):
     return img
 
 StoredVar = []
-# for i in range(len(keys)):
-#     for j, key in enumerate(keys[i]):
-#         StoredVar.append(Store([60 * j + 10, 60 * i + 10], [50,50],key))
-
-# StoredVar.append(Store([100, 100],[250, 150],"2"))
-# StoredVar.append(Store([930, 100],[250, 150],"3"))
-# StoredVar.append(Store([480, 280],[320, 120],"4"))
-# StoredVar.append(Store([270, 360],[150, 250],"5"))
-# StoredVar.append(Store([850, 360],[150, 250],"6"))
-# StoredVar.append(Store([560, 420],[160, 120],"7"))
-# StoredVar.append(Store([480, 570],[320, 120],"8"))
-# StoredVar.append(Store([100, 710],[250, 150],"9"))
-# StoredVar.append(Store([930, 710],[250, 150],"10"))
 StoredVar.append(Store([250, 200],[150, 100],"2"))
 StoredVar.append(Store([830, 200],[150, 100],"3"))
 StoredVar.append(Store([480, 280],[270, 70],"4"))
