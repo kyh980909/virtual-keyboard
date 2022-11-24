@@ -131,3 +131,6 @@ dmypy.json
 data/
 wandb/
 .vscode/
+ckpt/
+keyboard/
+keyboard-small/
