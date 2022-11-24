@@ -56,7 +56,7 @@ def draw(img, storedVar):
 def draw_legend(img):
     overlay = img.copy()
     output = img.copy()
-    cv2.rectangle(overlay, (10/1280*width, 600/960*height), (280/1280*width, 950/960*height), (0, 0, 0), -1)
+    cv2.rectangle(overlay, (round(round(10/1280*width)), round(600/960*height)), (round(round(280/1280*width)), round(950/960*height)), (0, 0, 0), -1)
     i = 0
     for k, v in key_map.items():
         cv2.putText(overlay, f'{k} : {v}', (20, 650+(i*35)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
@@ -69,23 +69,23 @@ def draw_input(img, text):
     overlay = img.copy()
     output = img.copy()
 
-    cv2.rectangle(overlay, (990/1280*width, 900/960*height), (1270/1280*width, 950/960*height), (0, 0, 0), -1)
-    cv2.putText(overlay, text, (1010/1280*width, 935/960*height), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.rectangle(overlay, (round(990/1280*width), round(900/960*height)), (round(1270/1280*width), round(950/960*height)), (0, 0, 0), -1)
+    cv2.putText(overlay, text, (round(1010/1280*width), round(935/960*height)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
 
     cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
     return output
 
 StoredVar = []
 
-StoredVar.append(Store([390/1280*width, 280/960*height],[45/1280*width, 45/960*height],"1")) # 2
-StoredVar.append(Store([890/1280*width, 280/960*height],[45/1280*width, 45/960*height],"2")) # 3
-StoredVar.append(Store([640/1280*width, 320/960*height],[110/1280*width, 40/960*height],"3")) # 4
-StoredVar.append(Store([480/1280*width, 460/960*height],[45/1280*width, 80/960*height],"4")) # 5
-StoredVar.append(Store([800/1280*width, 460/960*height],[45/1280*width, 80/960*height],"5")) # 6
-StoredVar.append(Store([640/1280*width, 460/960*height],[50/1280*width, 50/960*height],"6")) # 7
-StoredVar.append(Store([640/1280*width, 600/960*height],[110/1280*width, 40/960*height],"7")) # 8
-StoredVar.append(Store([390/1280*width, 630/960*height],[45/1280*width, 45/960*height],"8")) # 9
-StoredVar.append(Store([890/1280*width, 630/960*height],[45/1280*width, 45/960*height],"9")) # 10
+StoredVar.append(Store([round(390/1280*width), round(280/960*height)],[round(45/1280*width), round(45/960*height)],"1")) # 2
+StoredVar.append(Store([round(890/1280*width), round(280/960*height)],[round(45/1280*width), round(45/960*height)],"2")) # 3
+StoredVar.append(Store([round(640/1280*width), round(320/960*height)],[round(110/1280*width), round(40/960*height)],"3")) # 4
+StoredVar.append(Store([round(480/1280*width), round(460/960*height)],[round(45/1280*width), round(80/960*height)],"4")) # 5
+StoredVar.append(Store([round(800/1280*width), round(460/960*height)],[round(45/1280*width), round(80/960*height)],"5")) # 6
+StoredVar.append(Store([round(640/1280*width), round(460/960*height)],[round(50/1280*width), round(50/960*height)],"6")) # 7
+StoredVar.append(Store([round(640/1280*width), round(600/960*height)],[round(110/1280*width), round(40/960*height)],"7")) # 8
+StoredVar.append(Store([round(390/1280*width), round(630/960*height)],[round(45/1280*width), round(45/960*height)],"8")) # 9
+StoredVar.append(Store([round(890/1280*width), round(630/960*height)],[round(45/1280*width), round(45/960*height)],"9")) # 10
 
 flag = 0
 text = ''
@@ -121,7 +121,7 @@ while (cap.isOpened()):
 
                             pyautogui.press('enter')
                             print("Correct result: ", button.text)
-                            print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]]))-1)  
+                            print("Predict result:", np.argmax(model.predict([[round(x1/(width)-1), y1/(height-1)]]))-1)  
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
                             # sd.Beep(2000, 100)
