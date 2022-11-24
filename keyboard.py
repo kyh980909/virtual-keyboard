@@ -25,16 +25,16 @@ key_map = {"1":"POWER ON", "2":"START", "3":"UP", "4":"LEFT", "5":"RIGHT", "6":"
 virtual = np.load('test.npy')
 
 camIndex=0
-cap=cv2.VideoCapture(camIndex)
+cap = cv2.VideoCapture(camIndex)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 960)
 
-print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-mpHands=mp.solutions.hands  # type: ignore
-Hands=mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7, max_num_hands=1)
-mpDraw=mp.solutions.drawing_utils  # type: ignore
+mpHands = mp.solutions.hands  
+Hands = mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7, max_num_hands=1)
+mpDraw = mp.solutions.drawing_utils
 
 keyboard = Controller()
 
@@ -56,7 +56,7 @@ def draw(img, storedVar):
 def draw_legend(img):
     overlay = img.copy()
     output = img.copy()
-    cv2.rectangle(overlay, (10, 600), (280, 950), (0, 0, 0), -1)
+    cv2.rectangle(overlay, (10/1280*width, 600/960*height), (280/1280*width, 950/960*height), (0, 0, 0), -1)
     i = 0
     for k, v in key_map.items():
         cv2.putText(overlay, f'{k} : {v}', (20, 650+(i*35)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
@@ -69,23 +69,23 @@ def draw_input(img, text):
     overlay = img.copy()
     output = img.copy()
 
-    cv2.rectangle(overlay, (990, 900), (1270, 950), (0, 0, 0), -1)
-    cv2.putText(overlay, text, (1010, 935), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.rectangle(overlay, (990/1280*width, 900/960*height), (1270/1280*width, 950/960*height), (0, 0, 0), -1)
+    cv2.putText(overlay, text, (1010/1280*width, 935/960*height), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
 
     cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
     return output
 
 StoredVar = []
 
-StoredVar.append(Store([390, 280],[45, 45],"1")) # 2
-StoredVar.append(Store([890, 280],[45, 45],"2")) # 3
-StoredVar.append(Store([640, 320],[110, 40],"3")) # 4
-StoredVar.append(Store([480, 460],[45, 80],"4")) # 5
-StoredVar.append(Store([800, 460],[45, 80],"5")) # 6
-StoredVar.append(Store([640, 460],[50, 50],"6")) # 7
-StoredVar.append(Store([640, 600],[110, 40],"7")) # 8
-StoredVar.append(Store([390, 630],[45, 45],"8")) # 9
-StoredVar.append(Store([890, 630],[45, 45],"9")) # 10
+StoredVar.append(Store([390/1280*width, 280/960*height],[45/1280*width, 45/960*height],"1")) # 2
+StoredVar.append(Store([890/1280*width, 280/960*height],[45/1280*width, 45/960*height],"2")) # 3
+StoredVar.append(Store([640/1280*width, 320/960*height],[110/1280*width, 40/960*height],"3")) # 4
+StoredVar.append(Store([480/1280*width, 460/960*height],[45/1280*width, 80/960*height],"4")) # 5
+StoredVar.append(Store([800/1280*width, 460/960*height],[45/1280*width, 80/960*height],"5")) # 6
+StoredVar.append(Store([640/1280*width, 460/960*height],[50/1280*width, 50/960*height],"6")) # 7
+StoredVar.append(Store([640/1280*width, 600/960*height],[110/1280*width, 40/960*height],"7")) # 8
+StoredVar.append(Store([390/1280*width, 630/960*height],[45/1280*width, 45/960*height],"8")) # 9
+StoredVar.append(Store([890/1280*width, 630/960*height],[45/1280*width, 45/960*height],"9")) # 10
 
 flag = 0
 text = ''
@@ -121,10 +121,11 @@ while (cap.isOpened()):
 
                             pyautogui.press('enter')
                             print("Correct result: ", button.text)
-                            print("Predict result:", np.argmax(model.predict([[x1/1279, y1/959]]))-1)  # type: ignore
+                            print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]]))-1)  
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
-                            sd.Beep(2000, 100)
+                            # sd.Beep(2000, 100)
+                            print('\a')
                             flag = 1
                     except Exception as e:
                         print(e)
@@ -132,7 +133,7 @@ while (cap.isOpened()):
             for button in StoredVar:
                 temp_x, temp_y = button.pos
                 temp_w, temp_h = button.size
-                if temp_x - temp_w < lmList[12][0] < temp_x + temp_w and temp_y - temp_h < lmList[12][1] < temp_y + temp_h: # 버튼 영역 내에 손가락이 들어온 것을 탐지
+                if temp_x - temp_w < lmList[12][0] < temp_x + temp_w and temp_y - temp_h < lmList[12][1] < temp_y + temp_h: # 버튼 영역 내에 중지 손가락 끝이 들어온 것을 탐지
                     cv2.rectangle(img, (temp_x - temp_w - 5, temp_y - temp_h - 5), (temp_x + temp_w + 5, temp_y + temp_h + 5), (0, 0, 255), thickness=2)
             flag = 0
 
