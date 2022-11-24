@@ -1,10 +1,7 @@
 import math
-from time import sleep
-import winsound as sd
 import cv2
 import mediapipe as mp
 from pynput.keyboard import Controller
-from time import sleep
 import math
 import numpy as np
 import tensorflow as tf
@@ -124,7 +121,6 @@ while (cap.isOpened()):
                             print("Predict result:", np.argmax(model.predict([[round(x1/(width)-1), y1/(height-1)]]))-1)  
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
-                            # sd.Beep(2000, 100)
                             print('\a')
                             flag = 1
                     except Exception as e:
