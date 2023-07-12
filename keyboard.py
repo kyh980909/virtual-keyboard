@@ -2,8 +2,10 @@ import math
 import cv2
 import mediapipe as mp
 from pynput.keyboard import Controller
+from time import sleep
 import math
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import pyautogui
 from tensorflow.keras.models import load_model
@@ -18,8 +20,20 @@ if gpus:
 
 model = load_model("demo_keyboard_model")
 
-key_map = {"1":"POWER ON", "2":"START", "3":"UP", "4":"LEFT", "5":"RIGHT", "6":"OK", "7":"DOWN", "8":"POWER OFF", "9":"STOP"}
-virtual = np.load('test.npy')
+print("가상 인터페이스 생성중...")
+test_data = pd.read_hdf('1280x960.h5', 'df')
+test_input = tf.convert_to_tensor(test_data, dtype=tf.float64)
+pred = model.predict_classes(test_input)
+pred = tf.reshape(pred, [1280, 960]).numpy()
+
+test = np.full((960, 1280, 3), 255, np.uint8)
+for y in range(960):
+    for x in range(1280):
+        test[y][x] = pred[x][y]
+
+
+key_map = {"1":"1", "2":"2", "3":"3", "4":"LEFT", "5":"OK", "6":"RIGHT"}
+# virtual = np.load('test.npy')
 
 camIndex=0
 cap = cv2.VideoCapture(camIndex)
@@ -53,10 +67,10 @@ def draw(img, storedVar):
 def draw_legend(img):
     overlay = img.copy()
     output = img.copy()
-    cv2.rectangle(overlay, (round(round(10/1280*width)), round(600/960*height)), (round(round(280/1280*width)), round(950/960*height)), (0, 0, 0), -1)
+    cv2.rectangle(overlay, (round(round(10/1280*width)), round(10/960*height)), (round(round(280/1280*width)), round(240/960*height)), (0, 0, 0), -1)
     i = 0
     for k, v in key_map.items():
-        cv2.putText(overlay, f'{k} : {v}', (20, 650+(i*35)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+        cv2.putText(overlay, f'{k} : {v}', (20, 40+(i*35)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
         i+=1
 
     cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
@@ -74,15 +88,15 @@ def draw_input(img, text):
 
 StoredVar = []
 
-StoredVar.append(Store([round(390/1280*width), round(280/960*height)],[round(45/1280*width), round(45/960*height)],"1")) # 2
-StoredVar.append(Store([round(890/1280*width), round(280/960*height)],[round(45/1280*width), round(45/960*height)],"2")) # 3
-StoredVar.append(Store([round(640/1280*width), round(320/960*height)],[round(110/1280*width), round(40/960*height)],"3")) # 4
-StoredVar.append(Store([round(480/1280*width), round(460/960*height)],[round(45/1280*width), round(80/960*height)],"4")) # 5
-StoredVar.append(Store([round(800/1280*width), round(460/960*height)],[round(45/1280*width), round(80/960*height)],"5")) # 6
-StoredVar.append(Store([round(640/1280*width), round(460/960*height)],[round(50/1280*width), round(50/960*height)],"6")) # 7
-StoredVar.append(Store([round(640/1280*width), round(600/960*height)],[round(110/1280*width), round(40/960*height)],"7")) # 8
-StoredVar.append(Store([round(390/1280*width), round(630/960*height)],[round(45/1280*width), round(45/960*height)],"8")) # 9
-StoredVar.append(Store([round(890/1280*width), round(630/960*height)],[round(45/1280*width), round(45/960*height)],"9")) # 10
+img = np.full((960, 1280, 3), 255, np.uint8)
+
+for index in range(1, model.output.shape[1]):
+    min_y = min(np.where(test==index)[0])
+    min_x = min(np.where(test==index)[1])
+    max_y = max(np.where(test==index)[0])
+    max_x = max(np.where(test==index)[1])
+
+    StoredVar.append(Store([round(((min_x+max_x)/2)/1280*width), round(((min_y+max_y)/2)/960*height)],[round(((max_x-min_x)/2)/1280*width), round(((max_y-min_y)/2)/960*height)], str(index)))
 
 flag = 0
 text = ''
@@ -113,14 +127,16 @@ while (cap.isOpened()):
                 if x - w< lmList[12][0] < x + w and y - h < lmList[12][1] < y + h: # 버튼 영역 내에 손가락이 들어온 것을 탐지
                     try:
                         if flag == 0: # 클릭 한번 하면 손가락 뗄 뗴 까지 클릭 비활성화
+                            print(key_map[button.text])
                             for s in key_map[button.text]:
                                 keyboard.press(s)
 
                             pyautogui.press('enter')
                             print("Correct result: ", button.text)
-                            print("Predict result:", np.argmax(model.predict([[round(x1/(width)-1), y1/(height-1)]]))-1)  
+                            print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]])))  
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
+                            # sd.Beep(2000, 100)
                             print('\a')
                             flag = 1
                     except Exception as e:
