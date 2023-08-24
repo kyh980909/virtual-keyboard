@@ -214,7 +214,6 @@ while True:
         if len(approx_corners) == 4:
             for corner in approx_corners:
                 cv2.circle(img, tuple(corner[0]), 10, (0, 255, 0), -1)  # 꼭짓점 그리기
-            # cap.release()
             pers_corners = approx_corners
             break
 '''
@@ -250,23 +249,15 @@ if not cap.isOpened():
     print("Error: Could not open camera.")
     exit()
 
-dw = 1280 #640
-dh = 960 #480 #round(dw * 297 / 210)  # A4 용지 크기: 210x297cm
+dw = 1280
+dh = 960
+
+# 입력 영상 크기 및 출력 영상 크기
+h, w = 960, 1280
 
 # 모서리 점들의 좌표, 드래그 상태 여부
-srcQuad = np.array([pers_corners[0][0], [pers_corners[1][0][0], height-pers_corners[1][0][1]], [width-pers_corners[2][0][0], height-pers_corners[2][0][1]], [width-pers_corners[3][0][0], pers_corners[3][0][1]]], np.float32)
+srcQuad = np.array([pers_corners[0][0], [pers_corners[1][0][0], h-pers_corners[1][0][1]], [w-pers_corners[2][0][0], h-pers_corners[2][0][1]], [w-pers_corners[3][0][0], pers_corners[3][0][1]]], np.float32)
 dstQuad = np.array([[0, 0], [0, dh-1], [dw-1, dh-1], [dw-1, 0]], np.float32)
-
-# 원본 영상을 표시할 윈도우 이름
-# cv2.namedWindow(window_name2, 1)
-
-
-# 원본 영상을 표시
-# base = cv2.imread('key sample1.png')
-# base = draw(img, StoredVar)
-# base = draw_legend(base)
-# base = draw_input(base, text)
-# base = cv2.resize(base, dsize=(width, height), interpolation=cv2.INTER_LINEAR)
 
 # 가상 키보드 이미지 출력창
 cv2.imshow(window_name2, projector_img)
@@ -316,12 +307,11 @@ while True:
                                 keyboard.press(s)
 
                             pyautogui.press('enter')
-                            print("Correct result: ", button.text)
-                            print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]])))  
+                            # print("Correct result: ", button.text)
+                            # print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]])))
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(src, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
                             cv2.rectangle(projector_img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
-                            # sd.Beep(2000, 100)
                             print('\a')
 
                             flag = 1
@@ -342,10 +332,10 @@ while True:
     src = draw_input(src, text)
     projector_img = draw_input(projector_img, text)
     
-    cv2.line(src, tuple(pers_corners[0][0]), tuple(pers_corners[0][0]), (255,0,0), 10, cv2.LINE_AA)
-    cv2.line(src, tuple(pers_corners[1][0]), tuple(pers_corners[1][0]), (0,255,0), 10, cv2.LINE_AA)
-    cv2.line(src, tuple(pers_corners[2][0]), tuple(pers_corners[2][0]), (0,0,255), 10, cv2.LINE_AA)
-    cv2.line(src, tuple(pers_corners[3][0]), tuple(pers_corners[3][0]), (255,255,255), 10, cv2.LINE_AA)
+    cv2.circle(src, tuple(pers_corners[0][0].astype(int)), 25, (255,0,0), -1, cv2.LINE_AA)
+    cv2.circle(src, tuple(pers_corners[1][0].astype(int)), 25, (0,255,0), -1, cv2.LINE_AA)
+    cv2.circle(src, tuple(pers_corners[2][0].astype(int)), 25, (0,0,255), -1, cv2.LINE_AA)
+    cv2.circle(src, tuple(pers_corners[3][0].astype(int)), 25, (255,255,255), -1, cv2.LINE_AA)
 
     cv2.imshow(window_name, src)
     cv2.imshow(window_name2, projector_img)

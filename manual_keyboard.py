@@ -211,11 +211,11 @@ if not cap.isOpened():
     print("Error: Could not open camera.")
     exit()
 
-dw = 1280 #500
-dh = 960 #round(dw * 297 / 210)  # A4 용지 크기: 210x297cm
+dw = 1280
+dh = 960
 
 # 입력 영상 크기 및 출력 영상 크기
-h, w = 720, 1280
+h, w = 960, 1280
 
 # 모서리 점들의 좌표, 드래그 상태 여부
 srcQuad = np.array([[30, 30], [30, h-30], [w-30, h-30], [w-30, 30]], np.float32)
@@ -279,12 +279,11 @@ while True:
                                 keyboard.press(s)
 
                             pyautogui.press('enter')
-                            print("Correct result: ", button.text)
-                            print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]])))  
+                            # print("Correct result: ", button.text)
+                            # print("Predict result:", np.argmax(model.predict([[x1/(width-1), y1/(height-1)]])))  
                             text = f'{key_map[button.text]} ({button.text})'
                             cv2.rectangle(disp, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
                             cv2.rectangle(projector_img, (x - w - 5, y - h - 5), (x + w + 5, y + h + 5), (0, 255, 0), thickness=2)
-                            # sd.Beep(2000, 100)
                             print('\a')
 
                             flag = 1

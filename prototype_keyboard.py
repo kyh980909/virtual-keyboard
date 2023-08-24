@@ -21,24 +21,23 @@ if gpus:
 model = load_model("demo_keyboard_model")
 
 print("가상 인터페이스 생성중...")
-test_data = pd.read_hdf('1280x720.h5', 'df')
+test_data = pd.read_hdf('1280x960.h5', 'df')
 test_input = tf.convert_to_tensor(test_data, dtype=tf.float64)
 pred = model.predict_classes(test_input)
-pred = tf.reshape(pred, [1280, 720]).numpy()
+pred = tf.reshape(pred, [1280, 960]).numpy()
 
-test = np.full((720, 1280, 3), 255, np.uint8)
-for y in range(720):
+test = np.full((960, 1280, 3), 255, np.uint8)
+for y in range(960):
     for x in range(1280):
         test[y][x] = pred[x][y]
 
 
 key_map = {"1":"1", "2":"2", "3":"3", "4":"LEFT", "5":"OK", "6":"RIGHT"}
-# virtual = np.load('test.npy')
 
 camIndex=0
 cap = cv2.VideoCapture(camIndex)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 960)
 
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -67,7 +66,7 @@ def draw(img, storedVar):
 def draw_legend(img):
     overlay = img.copy()
     output = img.copy()
-    cv2.rectangle(overlay, (round(round(10/1280*width)), round(10/720*height)), (round(round(280/1280*width)), round(240/720*height)), (0, 0, 0), -1)
+    cv2.rectangle(overlay, (round(round(10/1280*width)), round(10/960*height)), (round(round(280/1280*width)), round(240/960*height)), (0, 0, 0), -1)
     i = 0
     for k, v in key_map.items():
         cv2.putText(overlay, f'{k} : {v}', (20, 40+(i*35)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
@@ -80,15 +79,15 @@ def draw_input(img, text):
     overlay = img.copy()
     output = img.copy()
 
-    cv2.rectangle(overlay, (round(990/1280*width), round(900/720*height)), (round(1270/1280*width), round(950/720*height)), (0, 0, 0), -1)
-    cv2.putText(overlay, text, (round(1010/1280*width), round(935/720*height)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.rectangle(overlay, (round(990/1280*width), round(900/960*height)), (round(1270/1280*width), round(950/960*height)), (0, 0, 0), -1)
+    cv2.putText(overlay, text, (round(1010/1280*width), round(935/960*height)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
 
     cv2.addWeighted(overlay, 0.7, output, 0.3, 0, output)
     return output
 
 StoredVar = []
 
-img = np.full((720, 1280, 3), 255, np.uint8)
+img = np.full((960, 1280, 3), 255, np.uint8)
 
 for index in range(1, model.output.shape[1]):
     min_y = min(np.where(test==index)[0])
@@ -96,7 +95,7 @@ for index in range(1, model.output.shape[1]):
     max_y = max(np.where(test==index)[0])
     max_x = max(np.where(test==index)[1])
 
-    StoredVar.append(Store([round(((min_x+max_x)/2)/1280*width), round(((min_y+max_y)/2)/720*height)],[round(((max_x-min_x)/2)/1280*width), round(((max_y-min_y)/2)/720*height)], str(index)))
+    StoredVar.append(Store([round(((min_x+max_x)/2)/1280*width), round(((min_y+max_y)/2)/960*height)],[round(((max_x-min_x)/2)/1280*width), round(((max_y-min_y)/2)/960*height)], str(index)))
 
 flag = 0
 text = ''
