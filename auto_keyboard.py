@@ -135,7 +135,7 @@ if gpus:
   except RuntimeError as e:
     print(e)
 
-model = load_model("demo_keyboard_model")
+model = load_model("keyboard_model1")
 
 print("가상 인터페이스 생성중...")
 test_data = pd.read_hdf('1280x960.h5', 'df')
